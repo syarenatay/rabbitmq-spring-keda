@@ -1,17 +1,17 @@
-# RabbitMQ Spring Boot with KEDA Scaling
+# RabbitMQ Spring Boot ve KEDA ile Dinamik Ölçeklendirme
 
-This project demonstrates a producer-consumer architecture using Spring Boot and RabbitMQ, with event-driven autoscaling in Kubernetes powered by **KEDA**.
+Bu proje, Spring Boot ve RabbitMQ kullanarak oluşturulmuş bir üretici-tüketici (producer-consumer) mimarisini ve bu mimarinin Kubernetes üzerinde **KEDA** kullanılarak olay tabanlı (event-driven) olarak nasıl otomatik ölçeklendirildiğini göstermektedir.
 
-## 🚀 Features
+## 🚀 Özellikler
 
-- **Producer Service**: A Spring Boot API that sends messages to a RabbitMQ queue.
-- **Consumer Service**: A Spring Boot application that processes messages from the queue.
-- **RabbitMQ**: Message broker for asynchronous communication.
-- **KEDA Integration**: Automatically scales the consumer pods based on the number of messages waiting in the RabbitMQ queue.
-- **Dockerized**: Includes `Docker-compose` for local development.
-- **Kubernetes Ready**: Deployment manifests and KEDA `ScaledObject` included.
+- **Üretici Servis (Producer)**: Mesajları RabbitMQ kuyruğuna gönderen Spring Boot API.
+- **Tüketici Servis (Consumer)**: Kuyruktaki mesajları işleyen Spring Boot uygulaması.
+- **RabbitMQ**: Servisler arası asenkron iletişim için mesaj aracısı.
+- **KEDA Entegrasyonu**: RabbitMQ kuyruğundaki bekleyen mesaj sayısına göre tüketici (consumer) pod'larını otomatik olarak ölçeklendirir.
+- **Dockerize Edilmiş**: Yerel geliştirme için `Docker-compose` desteği.
+- **Kubernetes Uyumlu**: Deployment manifestleri ve KEDA `ScaledObject` yapılandırması hazır.
 
-## 🛠 Technologies
+## 🛠 Kullanılan Teknolojiler
 
 - **Java 17+**
 - **Spring Boot 3.x**
@@ -20,46 +20,46 @@ This project demonstrates a producer-consumer architecture using Spring Boot and
 - **Kubernetes**
 - **KEDA (Kubernetes Event-driven Autoscaling)**
 
-## 📂 Project Structure
+## 📂 Proje Yapısı
 
-- `/producer`: Spring Boot app that generates messages.
-- `/consumer`: Spring Boot app that consumes messages.
-- `docker-compose.yaml`: Setup for RabbitMQ and services locally.
-- `consumer/deployment.yaml`: K8s deployment for the consumer.
-- `consumer/scaledobject.yaml`: KEDA scaling configuration.
+- `/producer`: Mesaj üreten Spring Boot uygulaması.
+- `/consumer`: Mesajları tüketen Spring Boot uygulaması.
+- `docker-compose.yaml`: RabbitMQ ve servisleri yerelde ayağa kaldırmak için kurulum.
+- `consumer/deployment.yaml`: Consumer servisinin K8s üzerinde deployment dosyası.
+- `consumer/scaledobject.yaml`: KEDA otomatik ölçeklendirme yapılandırması.
 
-## ☸️ Kubernetes & KEDA Setup
+## ☸️ Kubernetes ve KEDA Yapılandırması
 
-The consumer is configured to scale automatically using KEDA.
+Tüketici servisi, KEDA kullanılarak kuyruk yoğunluğuna göre ölçeklenecek şekilde ayarlanmıştır.
 
-### ScaledObject Configuration
-The `ScaledObject` monitors the `notification_queue`.
-- **minReplicaCount**: 1
-- **maxReplicaCount**: 10
-- **Threshold**: 10 messages (Scales up every 10 messages in the queue).
+### ScaledObject Yapılandırması
+`ScaledObject`, `notification_queue` kuyruğunu izler:
+- **minReplicaCount**: 1 (Her zaman en az 1 pod çalışır)
+- **maxReplicaCount**: 10 (En fazla 10 pod'a kadar ölçeklenir)
+- **Eşik Değer (Threshold)**: 10 mesaj (Kuyruktaki her 10 mesaj için yeni bir pod açılır).
 
-### Environment Variables
-The consumer expects:
-- `SPRING_RABBITMQ_HOST`: RabbitMQ broker address.
-- `SPRING_RABBITMQ_PORT`: RabbitMQ port (default 5672).
+### Ortam Değişkenleri
+Consumer şunları bekler:
+- `SPRING_RABBITMQ_HOST`: RabbitMQ broker adresi.
+- `SPRING_RABBITMQ_PORT`: RabbitMQ portu (varsayılan 5672).
 
-## 🏃 How to Run
+## 🏃 Nasıl Çalıştırılır?
 
-### Local (Docker Compose)
+### Yerel Ortam (Docker Compose)
 ```bash
 docker-compose up -d
 ```
 
 ### Kubernetes
-1. Ensure KEDA is installed in your cluster.
-2. Apply the consumer deployment:
+1. Cluster'ınızda KEDA'nın kurulu olduğundan emin olun.
+2. Tüketici servisinin deployment'ını yapın:
    ```bash
    kubectl apply -f consumer/deployment.yaml
    ```
-3. Apply the KEDA scaler:
+3. KEDA ölçeklendiriciyi aktif edin:
    ```bash
    kubectl apply -f consumer/scaledobject.yaml
    ```
 
-## 📝 License
-This project is for educational purposes.
+## 📝 Lisans
+Bu proje eğitim amaçlıdır.
