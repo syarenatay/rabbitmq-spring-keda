@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq-consumer
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-consumer
+    spec:
+      containers:
+        - name: consumer-container # Burayı sakın değiştirme, sade kalsın!
+          image: rabbit-consumer:v2 # Az önce build ettiğimiz isim
+          imagePullPolicy: IfNotPresent # Önce bilgisayarıma bak, yoksa internete git
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: "host.docker.internal"
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"

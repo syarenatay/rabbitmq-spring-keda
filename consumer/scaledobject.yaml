@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: rabbitmq-consumer-scaler
+spec:
+  scaleTargetRef:
+    name: rabbitmq-consumer
+  pollingInterval: 5
+  cooldownPeriod: 30
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: notification_queue
+        mode: QueueLength
+        value: "10"
+        # vhost ismini açıkça belirtiyoruz (varsayılan / işaretidir)
+        vhostName: "/"
+        # Adresi en sade haliyle, kullanıcı adı ve şifreyle veriyoruz
+        host: http://guest:guest@host.docker.internal:15672/
